@@ -57,7 +57,6 @@ def gpt_answer(text):
         stop=None
     )
     return response.choices[0].text.strip()
-print(gpt_answer("Heelo"))
 
 def execute_cmd(cmd):
     if cmd == "off":
