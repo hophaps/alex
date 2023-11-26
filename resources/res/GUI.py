@@ -10,6 +10,7 @@ import threading
 import time
 import resources1
 
+
 class Jarvis_GUI(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -185,10 +186,10 @@ class Jarvis_GUI(object):
                 if v == value:
                     return k
 
-
         self.conn = sqlite3.connect("resources/data_base")
         self.cursor = self.conn.cursor()
-        self.microphone.setText(get_key(self.dev, int(self.cursor.execute("SELECT name_device FROM device").fetchall()[0][0]) + 1))
+        self.microphone.setText(
+            get_key(self.dev, int(self.cursor.execute("SELECT name_device FROM device").fetchall()[0][0]) + 1))
         self.microphone.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.microphone.setWordWrap(True)
         self.microphone.setObjectName("microphone")
@@ -283,11 +284,9 @@ class Jarvis_GUI(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
     def thread_stop(self):
         self.stop_thread = True
         self.thread.join()
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -299,9 +298,8 @@ class Jarvis_GUI(object):
         self.label_4.setText(_translate("MainWindow", "Ресурсы"))
 
 
-
 class GUI_Settings(object):
-    def setupUi(self, MainWindow,):
+    def setupUi(self, MainWindow, ):
         self.conn = sqlite3.connect("resources/data_base")
         self.cursor = self.conn.cursor()
         MainWindow.setObjectName("MainWindow")
@@ -577,8 +575,8 @@ class GUI_Settings(object):
         self.Picovoice_API_input.setFont(font)
         self.Picovoice_API_input.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.Picovoice_API_input.setStyleSheet("    color: rgb(138, 200, 50);\n"
-                                         "     background-color:rgb(44, 46, 51);\n"
-                                         "     border-radius:9px;")
+                                               "     background-color:rgb(44, 46, 51);\n"
+                                               "     border-radius:9px;")
         self.Picovoice_API_input.setFrame(True)
         self.Picovoice_API_input.setCursorPosition(51)
         self.Picovoice_API_input.setAlignment(QtCore.Qt.AlignCenter)
@@ -608,7 +606,6 @@ class GUI_Settings(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -625,7 +622,6 @@ class GUI_Settings(object):
         self.save_btn.setText(_translate("MainWindow", "Сохранить"))
         self.settings_3.setText(_translate("MainWindow", "Назад"))
 
-
     def GUI_Setting_GPT(self):
         self.microphones.hide()
         self.Picovoice_API_input.hide()
@@ -633,13 +629,12 @@ class GUI_Settings(object):
         self.devices.setStyleSheet("background: transparent;\n"
                                    "color: rgb(255, 255, 255);")
         self.picovoice.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(255, 255, 255);")
+                                     "color: rgb(255, 255, 255);")
         self.chat_gpt.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(116, 184, 22);")
+                                    "color: rgb(116, 184, 22);")
         self.label_4.setText("Введите API токен для Chat GPT")
         self.label_5.setText("Без него некоторые функции не будут работать")
         self.label_6.setText("..................................................................................")
-
 
     def GUI_Setting_Picovoice(self):
         self.microphones.hide()
@@ -648,13 +643,12 @@ class GUI_Settings(object):
         self.devices.setStyleSheet("background: transparent;\n"
                                    "color: rgb(255, 255, 255);")
         self.picovoice.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(116, 184, 22);")
+                                     "color: rgb(116, 184, 22);")
         self.chat_gpt.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(255, 255, 255);")
+                                    "color: rgb(255, 255, 255);")
         self.label_4.setText("Введите API токен для Picovoice")
         self.label_5.setText("Без него распознавание голоса работать")
         self.label_6.setText("..................................................................................")
-
 
     def GUI_Setting_Devices(self, name):
         self.microphones.show()
@@ -663,14 +657,13 @@ class GUI_Settings(object):
         self.devices.setStyleSheet("background: transparent;\n"
                                    "color: rgb(116, 184, 22);")
         self.picovoice.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(255, 255, 255);")
+                                     "color: rgb(255, 255, 255);")
         self.chat_gpt.setStyleSheet("background: transparent;\n"
-                                   "color: rgb(255, 255, 255);")
+                                    "color: rgb(255, 255, 255);")
         self.label_4.setText("Выберите микрофон")
         self.label_5.setText("Его будет слушать ассистент.")
         self.label_6.setText(".....................................................")
         self.microphones.setCurrentIndex(name)
-
 
     def save_setting(self):
         self.index = self.microphones.currentIndex()
@@ -683,3 +676,307 @@ class GUI_Settings(object):
         self.msg.setText("Для сохранения изменений необходим перезапуск приложения")
         self.msg.setIcon(QMessageBox.Warning)
         self.msg.exec_()
+
+
+class GUI_comand(object):
+    def setupUi(self, MainWindow):
+        self.conn = sqlite3.connect("resources/data_base")
+        self.cursor = self.conn.cursor()
+        self.com = self.cursor.execute("SELECT * FROM command").fetchall()
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.setEnabled(True)
+        MainWindow.resize(698, 719)
+        MainWindow.setMinimumSize(QtCore.QSize(698, 719))
+        MainWindow.setMaximumSize(QtCore.QSize(698, 719))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
+        MainWindow.setFont(font)
+        MainWindow.setTabletTracking(False)
+        MainWindow.setAcceptDrops(False)
+        MainWindow.setAutoFillBackground(False)
+        MainWindow.setStyleSheet("font-family: Noto Sans SC;\n"
+                                 "background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0, stop:0 rgba(15, 0, 25, 255), stop:0.427447 rgba(7, 11, 25, 235), stop:1 rgba(27, 13, 28, 255));")
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.line = QtWidgets.QFrame(self.centralwidget)
+        self.line.setEnabled(True)
+        self.line.setGeometry(QtCore.QRect(-10, 0, 701, 81))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(19)
+        font.setKerning(True)
+        self.line.setFont(font)
+        self.line.setStyleSheet("background-color:  rgba(0, 0, 0, 255);")
+        self.line.setLineWidth(0)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.btn_frame = QtWidgets.QFrame(self.centralwidget)
+        self.btn_frame.setGeometry(QtCore.QRect(110, 10, 481, 61))
+        self.btn_frame.setStyleSheet("background-color: transparent;")
+        self.btn_frame.setObjectName("btn_frame")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.btn_frame)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(7)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.bt = QtWidgets.QPushButton(self.btn_frame)
+        self.bt.setEnabled(False)
+        self.bt.setMinimumSize(QtCore.QSize(230, 50))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
+        self.bt.setFont(font)
+        self.bt.setStyleSheet("QPushButton{\n"
+                              "    color: rgb(255, 255, 255);\n"
+                              "     background-color:rgba(255,255,255,30);\n"
+                              "     border: 1px solid rgba(255,255,255,40);\n"
+                              "     border-radius:7px;\n"
+                              "width: 230;\n"
+                              "height: 50;\n"
+                              "}\n"
+                              "QPushButton:hover{\n"
+                              "background-color:rgba(255,255,255,30);\n"
+                              "}\n"
+                              "QPushButton:pressed{\n"
+                              "background-color:rgba(255,255,255,70);\n"
+                              "}")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Icon/settings_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.bt.setIcon(icon)
+        self.bt.setIconSize(QtCore.QSize(40, 40))
+        self.bt.setObjectName("bt")
+        self.horizontalLayout_2.addWidget(self.bt)
+        self.save_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.save_btn.setEnabled(True)
+        self.save_btn.setGeometry(QtCore.QRect(70, 560, 561, 50))
+        self.save_btn.setMinimumSize(QtCore.QSize(230, 50))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
+        self.save_btn.setFont(font)
+        self.save_btn.setStyleSheet("QPushButton{\n"
+                                    "    color: rgb(255, 255, 255);\n"
+                                    "     background-color:rgb(116, 184, 22);\n"
+                                    "     border-radius:10px;\n"
+                                    "}\n"
+                                    "QPushButton:hover{\n"
+                                    "background-color:rgba(116, 184, 22,195);\n"
+                                    "}\n"
+                                    "QPushButton:pressed{\n"
+                                    "background-color:rgba(116, 184, 22,100);\n"
+                                    "}")
+        self.save_btn.setIconSize(QtCore.QSize(40, 40))
+        self.save_btn.setObjectName("save_btn")
+        self.settings_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.settings_3.setEnabled(True)
+        self.settings_3.setGeometry(QtCore.QRect(70, 630, 561, 50))
+        self.settings_3.setMinimumSize(QtCore.QSize(230, 50))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
+        self.settings_3.setFont(font)
+        self.settings_3.setStyleSheet("QPushButton{\n"
+                                      "    color: rgb(255, 255, 255);\n"
+                                      "     background-color:rgb(73, 80, 87);\n"
+                                      "     border-radius:10px;\n"
+                                      "}\n"
+                                      "QPushButton:hover{\n"
+                                      "background-color:rgba(73, 80, 87,195);\n"
+                                      "}\n"
+                                      "QPushButton:pressed{\n"
+                                      "background-color:rgba(73, 80, 87,100);\n"
+                                      "}")
+        self.settings_3.setIconSize(QtCore.QSize(40, 40))
+        self.settings_3.setObjectName("settings_3")
+        self.save_btn_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.save_btn_2.setEnabled(True)
+        self.save_btn_2.setGeometry(QtCore.QRect(70, 490, 561, 50))
+        self.save_btn_2.setMinimumSize(QtCore.QSize(230, 50))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
+        self.save_btn_2.setFont(font)
+        self.save_btn_2.setStyleSheet("QPushButton{\n"
+                                      "    color: rgb(255, 255, 255);\n"
+                                      "     background-color:rgb(116, 184, 22);\n"
+                                      "     border-radius:10px;\n"
+                                      "}\n"
+                                      "QPushButton:hover{\n"
+                                      "background-color:rgba(116, 184, 22,195);\n"
+                                      "}\n"
+                                      "QPushButton:pressed{\n"
+                                      "background-color:rgba(116, 184, 22,100);\n"
+                                      "}")
+        self.save_btn_2.setIconSize(QtCore.QSize(40, 40))
+        self.save_btn_2.setObjectName("save_btn_2")
+        self.Comand = QtWidgets.QComboBox(self.centralwidget)
+        self.Comand.setGeometry(QtCore.QRect(50, 100, 601, 51))
+        self.Comand.setStyleSheet("    color: rgb(204, 204, 204);\n"
+                                  " background-color:rgb(37, 38, 43);\n"
+                                  "     border-radius:7px;")
+        self.Comand.setObjectName("Comand")
+        for i in range(len(self.com)):
+            self.Comand.addItem(self.com[i][1])
+        self.name = QtWidgets.QLineEdit(self.centralwidget)
+        self.name.setGeometry(QtCore.QRect(30, 200, 621, 41))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(11)
+        self.name.setFont(font)
+        self.name.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
+        self.name.setStyleSheet("    color: rgb(138, 200, 50);\n"
+                                "     background-color:rgb(44, 46, 51);\n"
+                                "     border-radius:9px;")
+        self.name.setText("")
+        self.name.setFrame(True)
+        self.name.setCursorPosition(0)
+        self.name.setAlignment(QtCore.Qt.AlignCenter)
+        self.name.setObjectName("name")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(30, 180, 341, 16))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(7)
+        self.label_6.setFont(font)
+        self.label_6.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(255, 255, 255);")
+        self.label_6.setObjectName("label_6")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(30, 160, 341, 31))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(13)
+        self.label_4.setFont(font)
+        self.label_4.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(138, 200, 50);")
+        self.label_4.setObjectName("label_4")
+        self.comands = QtWidgets.QLineEdit(self.centralwidget)
+        self.comands.setGeometry(QtCore.QRect(30, 300, 621, 41))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(11)
+        self.comands.setFont(font)
+        self.comands.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
+        self.comands.setStyleSheet("    color: rgb(138, 200, 50);\n"
+                                   "     background-color:rgb(44, 46, 51);\n"
+                                   "     border-radius:9px;")
+        self.comands.setText("")
+        self.comands.setFrame(True)
+        self.comands.setCursorPosition(0)
+        self.comands.setAlignment(QtCore.Qt.AlignCenter)
+        self.comands.setObjectName("comands")
+        self.action = QtWidgets.QLineEdit(self.centralwidget)
+        self.action.setGeometry(QtCore.QRect(30, 400, 621, 41))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(11)
+        self.action.setFont(font)
+        self.action.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
+        self.action.setStyleSheet("    color: rgb(138, 200, 50);\n"
+                                  "     background-color:rgb(44, 46, 51);\n"
+                                  "     border-radius:9px;")
+        self.action.setText("")
+        self.action.setFrame(True)
+        self.action.setCursorPosition(0)
+        self.action.setAlignment(QtCore.Qt.AlignCenter)
+        self.action.setObjectName("action")
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(30, 280, 341, 16))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(7)
+        self.label_7.setFont(font)
+        self.label_7.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(255, 255, 255);")
+        self.label_7.setObjectName("label_7")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(30, 260, 341, 31))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(13)
+        self.label_5.setFont(font)
+        self.label_5.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(138, 200, 50);")
+        self.label_5.setObjectName("label_5")
+        self.label_8 = QtWidgets.QLabel(self.centralwidget)
+        self.label_8.setGeometry(QtCore.QRect(30, 360, 341, 31))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(13)
+        self.label_8.setFont(font)
+        self.label_8.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(138, 200, 50);")
+        self.label_8.setObjectName("label_8")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(30, 380, 341, 16))
+        font = QtGui.QFont()
+        font.setFamily("Noto Sans SC")
+        font.setPointSize(7)
+        self.label_9.setFont(font)
+        self.label_9.setStyleSheet("background: transparent;\n"
+                                   "color: rgb(255, 255, 255);")
+        self.label_9.setObjectName("label_9")
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.name.setText(self.Comand.currentText())
+        self.comands.setText(self.cursor.execute("SELECT commands FROM command WHERE name=?", (self.Comand.currentText(),)).fetchall()[0][0])
+        self.action.setText(self.cursor.execute("SELECT action FROM command WHERE name=?", (self.Comand.currentText(),)).fetchall()[0][0])
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.bt.setText(_translate("MainWindow", "Команды"))
+        self.save_btn.setText(_translate("MainWindow", "Сохранить"))
+        self.settings_3.setText(_translate("MainWindow", "Назад"))
+        self.save_btn_2.setText(_translate("MainWindow", "Создать"))
+        self.label_6.setText(_translate("MainWindow", "........................."))
+        self.label_4.setText(_translate("MainWindow", "Название"))
+        self.label_7.setText(_translate("MainWindow", ".............................................................."))
+        self.label_5.setText(_translate("MainWindow", "Команды через запятую"))
+        self.label_8.setText(_translate("MainWindow", "Действие"))
+        self.label_9.setText(_translate("MainWindow", "........................"))
+
+    def change_val(self, text):
+        self.name.setText(text)
+        self.comands.setText(self.cursor.execute("SELECT commands FROM command WHERE name=?", (text,)).fetchall()[0][0])
+        self.action.setText(self.cursor.execute("SELECT action FROM command WHERE name=?", (text,)).fetchall()[0][0])
+
+    def add_command(self):
+        self.Comand.addItem("Название")
+        self.name.setText("Название")
+        self.comands.setText("Команды")
+        self.action.setText("Действие")
+
+    def save_command(self):
+        # Check if the command exists
+        existing_command = self.cursor.execute("SELECT commands FROM command WHERE name=?",
+                                               (self.name.text(),)).fetchall()
+        try:
+            if not existing_command:
+                # Insert new command
+                self.cursor.execute('''
+                    INSERT INTO command (name, commands, action) VALUES (?, ?, ?)
+                ''', (self.name.text(), self.comands.text(), self.action.text()))
+            else:
+                # Update existing command
+                self.cursor.execute('''
+                    UPDATE command SET commands=?, action=? WHERE name=?
+                ''', (self.comands.text(), self.action.text(), self.name.text()))
+
+            # Save changes
+            self.conn.commit()
+        except Exception as e:
+            pass
