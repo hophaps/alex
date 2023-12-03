@@ -11,14 +11,14 @@ from comtypes import CLSCTX_ALL
 import datetime, openai, sys
 import config, threading
 from PyQt5.QtWidgets import QApplication
-from resources.Jarvis_GUI import Jarvis
+from resources.Alex_GUI import Alex
 import sqlite3
 import os
 
 # фразы и имена которые нужно вырезать из запроса
 opts = {
-    "alias": ('кеша','кеш','инокентий','иннокентий','кишун','киш',
-              'кишаня','кяш','кяша','кэш','кэша'),
+    "alias": ('алекс','аликс','ал','леша','лекс',
+              'ликс'),
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси')
 }
 
@@ -142,7 +142,7 @@ def command(text):
 # Функция запуска интерфейса
 def run_gui():
     app = QApplication(sys.argv)
-    ex = Jarvis()
+    ex = Alex()
     ex.show()
     sys.exit(app.exec_())
 

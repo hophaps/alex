@@ -2,26 +2,26 @@ import sys
 import sqlite3
 sys.path.insert(1, 'resources/res')
 from PyQt5.QtWidgets import QMainWindow
-from resources.res.GUI import Jarvis_GUI, GUI_Settings, GUI_comand
+from resources.res.GUI import Alex_GUI, GUI_Settings, GUI_comand
 
 
 # Наследуемся от виджета из PyQt5.QtWidgets и от класса с интерфейсом
-class Jarvis(QMainWindow, Jarvis_GUI):
+class Alex(QMainWindow, Alex_GUI):
     def __init__(self):
         super().__init__()
-        # Вызываем метод для загрузки основного интерфейса из класса Jarvis_GUI,
+        # Вызываем метод для загрузки основного интерфейса из класса Alex_GUI,
         self.setupUi(self)
         self.settings.clicked.connect(self.run_settings)
         self.command.clicked.connect(self.run_comands)
 
     def closeEvent(self, event):
         # Отработка закрытия интерфейса
-        Jarvis_GUI.thread_stop(self)
+        Alex_GUI.thread_stop(self)
         event.accept()
 
     def run_settings(self):
         # Запуск окна настроек
-        self.settings_GUI = Jarvis_Settings()
+        self.settings_GUI = Alex_Settings()
         self.settings_GUI.show()
 
     def run_comands(self):
@@ -30,7 +30,7 @@ class Jarvis(QMainWindow, Jarvis_GUI):
         self.comand_GUI.show()
 
 
-class Jarvis_Settings(QMainWindow, GUI_Settings):
+class Alex_Settings(QMainWindow, GUI_Settings):
     # Экран настроек
     def __init__(self):
         super().__init__()

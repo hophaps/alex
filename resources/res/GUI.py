@@ -11,7 +11,7 @@ import time
 import resources1
 
 
-class Jarvis_GUI(object):
+class Alex_GUI(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
@@ -290,7 +290,7 @@ class Jarvis_GUI(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Jarvis 0.2"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Alex 0.2"))
         self.settings.setText(_translate("MainWindow", "Настройки"))
         self.command.setText(_translate("MainWindow", "Команды"))
         self.label_2.setText(_translate("MainWindow", "Микрофон"))
