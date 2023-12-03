@@ -502,7 +502,7 @@ class GUI_Settings(object):
         self.microphones.setObjectName("microphones")
         devices = sd.query_devices()
         self.dev = {}
-
+        # Получение списка микрофонов
         for i, device in enumerate(devices):
             if i > 0 and i < 6:
                 self.dev.update({device['name']: device['index']})

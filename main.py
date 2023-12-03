@@ -12,17 +12,22 @@ import datetime, openai, sys
 import config, threading
 from PyQt5.QtWidgets import QApplication
 from resources.Jarvis_GUI import Jarvis
+import sqlite3
+import os
 
+# фразы и имена которые нужно вырезать из запроса
 opts = {
     "alias": ('кеша','кеш','инокентий','иннокентий','кишун','киш',
               'кишаня','кяш','кяша','кэш','кэша'),
     "tbr": ('скажи','расскажи','покажи','сколько','произнеси')
 }
 
+# подключение файла с командами
 VA_CMD_LIST = yaml.safe_load(
     open('resources/commands.yaml', 'rt', encoding='utf8'),
 )
 
+# Настройки модели для распознавания речи
 model = Model("resources/vosk-model-small")
 rec = KaldiRecognizer(model, 16000)
 p = pyaudio.PyAudio()
@@ -35,6 +40,7 @@ engine = pyttsx3.init()
 # Инициация ChatGPT
 openai.api_key = config.OPENAI_TOKEN
 
+# Функция записи звука
 def listen():
     while True:
         data = stream.read(4000, exception_on_overflow=False)
@@ -43,21 +49,27 @@ def listen():
             if answer['text']:
                 yield answer["text"]
 
+# Озвучка текста
 def speak(text):
     engine.say(text)
     engine.runAndWait()
 
+# Обращение к ChatGPT
 def gpt_answer(text):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=text,
-        max_tokens=256,
-        temperature=0.7,
-        top_p=1,
-        stop=None
-    )
-    return response.choices[0].text.strip()
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=text,
+            max_tokens=256,
+            temperature=0.7,
+            top_p=1,
+            stop=None
+        )
+        return response.choices[0].text.strip()
+    except Exception:
+        return "Проблемы с вашим ключом ассистента"
 
+# Выполнение команды
 def execute_cmd(cmd):
     if cmd == "off":
         speak("Всего хорошего сэр")
@@ -86,28 +98,48 @@ def execute_cmd(cmd):
     elif cmd == "gpt":
         return True
 
+# Определение команды
 def command(text):
     try:
         cmd = text
         for x in opts['alias']:
             cmd = cmd.replace(x, "").strip()
-
-        for x in opts['tbr']:
-            cmd = cmd.replace(x, "").strip()
-
+        conn = sqlite3.connect("resources/data_base")
+        cursor = conn.cursor()
+        a = cursor.execute("SELECT action, commands FROM command").fetchall()
         RC = {'cmd': '', 'percent': 0}
-        for c, v in VA_CMD_LIST.items():
-
-            for x in v:
-                vrt = fuzz.ratio(cmd, x)
+        for i in a:
+            for x in i[1].split(", "):
+                vrt = fuzz.ratio(cmd.lower().replace(" ", ""), x.lower().replace(" ", ""))
                 if vrt > RC['percent']:
-                    RC['cmd'] = c
+                    RC['cmd'] = i[0]
                     RC['percent'] = vrt
-        if execute_cmd(RC['cmd']) != None:
-            speak(gpt_answer(text))
+        if RC['percent'] >= 75:
+            os.system(RC["cmd"])
+            conn.close()
+            return
+        else:
+            for x in opts['tbr']:
+                cmd = cmd.replace(x, "").strip()
 
+            RC = {'cmd': '', 'percent': 0}
+            for c, v in VA_CMD_LIST.items():
+                for x in v:
+                    vrt = fuzz.ratio(cmd, x)
+                    if vrt > RC['percent']:
+                        RC['cmd'] = c
+                        RC['percent'] = vrt
+            if RC["percent"] >= 50 and RC["cmd"] != "gpt":
+                execute_cmd(RC['cmd'])
+                return
+        if "глубокий поиск" in text or "углубленный поиск" in text:
+            speak(gpt_answer(text))
+        else:
+            speak("Извините, я не понимаю чего вы хотите")
     except Exception:
-        print("Ошибка какаято")
+        print("Неизвестная ошибка")
+
+# Функция запуска интерфейса
 def run_gui():
     app = QApplication(sys.argv)
     ex = Jarvis()
@@ -116,11 +148,12 @@ def run_gui():
 
 # Запуск GUI в отдельном потоке
 if __name__ == '__main__':
-    gui_thread = threading.Thread(target=run_gui)
+    gui_thread = threading.Thread(target=run_gui, daemon=True)
     gui_thread.start()
 
 speak("Здравствуйте, сэр")
 
+# Прослушивание команд
 for text in listen():
     if text.lower().startswith(opts["alias"]):
         command(text.lower())

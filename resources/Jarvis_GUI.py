@@ -15,19 +15,23 @@ class Jarvis(QMainWindow, Jarvis_GUI):
         self.command.clicked.connect(self.run_comands)
 
     def closeEvent(self, event):
+        # Отработка закрытия интерфейса
         Jarvis_GUI.thread_stop(self)
         event.accept()
 
     def run_settings(self):
+        # Запуск окна настроек
         self.settings_GUI = Jarvis_Settings()
         self.settings_GUI.show()
 
     def run_comands(self):
+        # Запуск окна команд
         self.comand_GUI = alex_comand()
         self.comand_GUI.show()
 
 
 class Jarvis_Settings(QMainWindow, GUI_Settings):
+    # Экран настроек
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -62,6 +66,7 @@ class Jarvis_Settings(QMainWindow, GUI_Settings):
 
 class alex_comand(QMainWindow, GUI_comand):
     def __init__(self):
+        # Окно команд
         super().__init__()
         self.setupUi(self)
         self.save_btn_2.clicked.connect(self.Comands_add)
