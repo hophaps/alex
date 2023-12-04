@@ -14,6 +14,16 @@ from PyQt5.QtWidgets import QApplication
 from resources.Alex_GUI import Alex
 import sqlite3
 import os
+import csv
+
+# получение путей
+with open('resources/conf.cvs', encoding="utf8") as csvfile:
+    reader = csv.reader(csvfile, delimiter=';', quotechar='"')
+    for index, row in enumerate(reader):
+        if index == 1:
+            commands = row[0].split(", ")[1]
+        elif index == 2:
+            model = row[0].split(", ")[1]
 
 # фразы и имена которые нужно вырезать из запроса
 opts = {
@@ -24,11 +34,11 @@ opts = {
 
 # подключение файла с командами
 VA_CMD_LIST = yaml.safe_load(
-    open('resources/commands.yaml', 'rt', encoding='utf8'),
+    open(commands, 'rt', encoding='utf8'),
 )
 
 # Настройки модели для распознавания речи
-model = Model("resources/vosk-model-small")
+model = Model(model)
 rec = KaldiRecognizer(model, 16000)
 p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, input_device_index=config.MICROPHONE_INDEX, frames_per_buffer=8000)

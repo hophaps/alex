@@ -1,0 +1,3 @@
+name,way
+"commands", resources/commands.yaml
+"model", resources/vosk-model-small
